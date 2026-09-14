@@ -1,0 +1,14 @@
+/* Light-mode polish: loaded after the shared stylesheet. */
+html:not(.dark){background:#f4f7fb!important}html:not(.dark) body{background:linear-gradient(180deg,#fbfdff 0%,#f1f5f9 100%)!important;color:#172033!important}
+html:not(.dark) .glass-panel{background:rgba(255,255,255,.96)!important;border-color:#dbe3ec!important;box-shadow:0 8px 28px rgba(15,23,42,.055)!important}
+html:not(.dark) .search{background:#fff!important;color:#172033!important;border:1px solid #cbd5e1!important;box-shadow:0 2px 10px rgba(15,23,42,.04)!important}
+html:not(.dark) .search::placeholder{color:#94a3b8!important}html:not(.dark) .search:focus{border-color:#94a3b8!important;box-shadow:0 0 0 3px rgba(59,130,246,.08)!important}
+html:not(.dark) .subject-nav a{color:#475569!important}html:not(.dark) .subject-nav a:hover{background:#eef2f7!important;color:#172033!important}html:not(.dark) .subject-nav .home-link{background:#e7edf3!important;color:#334155!important}
+html:not(.dark) .sidebox h2,html:not(.dark) .dashboard-meta{color:#8794a5!important}html:not(.dark) .sidebox>a{color:#334155!important}html:not(.dark) .sidebox>a:hover{background:#eef3f8!important}
+html:not(.dark) .card-item h3,html:not(.dark) .dashboard-title,html:not(.dark) .unit-section>h2{color:#172033!important}html:not(.dark) .card-item p,html:not(.dark) .dashboard-desc{color:#526174!important}
+html:not(.dark) .formula-card{background:linear-gradient(135deg,#fff 0%,#f1f5f9 100%)!important;border-color:#d8e1ea!important;color:#172033!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.85)!important}html:not(.dark) .formula-card:hover{background:#fff!important;border-color:#c5d1dd!important}
+html:not(.dark) .note{background:#eef3f7!important;color:#334155!important}html:not(.dark) .tool{background:#f2faf8!important;border-color:#cbe7e2!important}html:not(.dark) .tool input,html:not(.dark) .coord-grid input{background:#fff!important;color:#172033!important;border-color:#d2dbe5!important}
+html:not(.dark) .dashboard-card{background:rgba(255,255,255,.97)!important;border-color:#d9e1ea!important;box-shadow:0 8px 28px rgba(15,23,42,.055)!important}html:not(.dark) .dashboard-card:hover{box-shadow:0 14px 35px rgba(15,23,42,.10)!important}
+html:not(.dark) .dashboard-icon{background:#eef3f7!important}html:not(.dark) .vis-canvas{background:#fff!important;border-color:#dbe3ec!important}
+html:not(.dark) .theme-btn{color:#475569!important}
+@media(max-width:600px){html:not(.dark) .glass-panel{box-shadow:0 4px 18px rgba(15,23,42,.045)!important}}
