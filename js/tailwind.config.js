@@ -1,0 +1,1 @@
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Pretendard','Inter','sans-serif']},colors:{chem:{50:'#f0fdfa',500:'#14b8a6',600:'#0d9488',700:'#0f766e',900:'#134e4a'},geo:{500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9',900:'#4c1d95'},phys:{500:'#14b8a6',600:'#0d9488',700:'#0f766e',900:'#134e4a'}},boxShadow:{glow:'0 0 25px -5px rgba(20,184,166,.25)'}}}}
