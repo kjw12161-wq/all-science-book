@@ -1,0 +1,36 @@
+/* Shared theme template for every assessment page. One template, two states. */
+:root{
+  --theme-bg:#ffffff;
+  --theme-surface:#ffffff;
+  --theme-surface-soft:#f8fafc;
+  --theme-text:#111827;
+  --theme-muted:#64748b;
+  --theme-border:#e5e7eb;
+  --theme-control:#ffffff;
+  --theme-control-text:#111827;
+}
+html.dark{
+  --theme-bg:#020617;
+  --theme-surface:#0f172a;
+  --theme-surface-soft:#111827;
+  --theme-text:#e2e8f0;
+  --theme-muted:#94a3b8;
+  --theme-border:#334155;
+  --theme-control:#111827;
+  --theme-control-text:#e2e8f0;
+}
+body[data-theme-page="assessment"]{
+  background:var(--theme-bg);
+  color:var(--theme-text);
+  transition:background-color .2s ease,color .2s ease;
+}
+body[data-theme-page="assessment"] .shared-theme-btn{
+  width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--theme-border);border-radius:12px;background:var(--theme-surface);
+  color:var(--theme-text);cursor:pointer;font-size:18px;line-height:1;
+  transition:background-color .2s ease,border-color .2s ease,transform .2s ease;
+}
+body[data-theme-page="assessment"] .shared-theme-btn:hover{transform:translateY(-1px)}
+body[data-theme-page="assessment"] .shared-theme-btn:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+body[data-theme-page="assessment"] .shared-theme-surface{background:var(--theme-surface);color:var(--theme-text);border-color:var(--theme-border)}
+body[data-theme-page="assessment"] .shared-theme-muted{color:var(--theme-muted)}
