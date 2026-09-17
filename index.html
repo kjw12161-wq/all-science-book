@@ -19,10 +19,10 @@
       <div class="flex-1 hidden sm:flex justify-center"><span class="text-xs font-bold text-slate-400 dark:text-slate-500">CHEMISTRY · GEOMETRY · PHYSICS</span></div>
       <button id="themeToggleBtn" aria-label="테마 전환" class="theme-btn" title="라이트 / 다크 모드 전환">
         <svg id="sunIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        <svg id="moonIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <svg id="moonIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9.003 9.003 0 0012 3a9.003 9.003 0 008.354 12.354z"/></svg>
       </button>
     </div>
-    <div class="subject-nav-wrap"><nav class="subject-nav" aria-label="과학 분야 이동"><a class="home-link" href="index.html">통합 과학</a><a href="chemistry.html">화학</a><a href="geometry.html">기하</a><a href="physics.html">물리학</a><a href="mock_exam.html">모의고사</a></nav></div>
+    <div class="subject-nav-wrap"><nav class="subject-nav" aria-label="과학 분야 이동"><a class="home-link" href="index.html">통합 과학</a><a href="chemistry.html">화학</a><a href="geometry.html">기하</a><a href="physics.html">물리학</a><a href="unit_test.html?subject=chemistry">화학 단원평가</a><a href="unit_test.html?subject=geometry">기하 단원평가</a><a href="unit_test.html?subject=physics">물리학 단원평가</a><a href="mock_exam.html">모의고사</a></nav></div>
   </header>
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <section class="science-hero !p-0"><div class="glass-panel rounded-3xl p-7 sm:p-10 shadow-sm"><div class="max-w-3xl">
@@ -36,9 +36,9 @@
       <a class="dashboard-card phys" href="physics.html"><div class="dashboard-icon"><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></div><div class="dashboard-meta">06 units</div><div class="dashboard-title">물리학</div><p class="dashboard-desc">힘의 합성, 포물선 운동, 원운동·단진동, 케플러·중력, 상대성 이론까지.</p><div class="mt-5 text-xs font-extrabold text-blue-700 dark:text-blue-300">물리학 노트 열기 →</div></a>
     </section>
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-      <a href="chemistry_test.html" class="dashboard-card chem block min-h-0"><div class="dashboard-icon">⚗</div><div class="dashboard-meta">04 UNIT TESTS</div><div class="dashboard-title">화학 단원평가</div><p class="dashboard-desc">4개 단원을 각각 선택해 15분 동안 5문제를 풀이합니다.</p><div class="mt-5 text-xs font-extrabold text-teal-700 dark:text-teal-300">화학 단원평가 →</div></a>
-      <a href="geometry_test.html" class="dashboard-card geo block min-h-0"><div class="dashboard-icon">◇</div><div class="dashboard-meta">04 UNIT TESTS</div><div class="dashboard-title">기하 단원평가</div><p class="dashboard-desc">이차곡선부터 공간좌표까지 단원별로 따로 평가합니다.</p><div class="mt-5 text-xs font-extrabold text-violet-700 dark:text-violet-300">기하 단원평가 →</div></a>
-      <a href="physics_test.html" class="dashboard-card phys block min-h-0"><div class="dashboard-icon">⚡</div><div class="dashboard-meta">06 UNIT TESTS</div><div class="dashboard-title">물리학 단원평가</div><p class="dashboard-desc">힘과 운동부터 특수·일반 상대성까지 단원별로 평가합니다.</p><div class="mt-5 text-xs font-extrabold text-blue-700 dark:text-blue-300">물리학 단원평가 →</div></a>
+      <a href="unit_test.html?subject=chemistry" class="dashboard-card chem block min-h-0"><div class="dashboard-icon">⚗</div><div class="dashboard-meta">SHARED UNIT TEST</div><div class="dashboard-title">화학 단원평가</div><p class="dashboard-desc">공통 단원평가 템플릿으로 화학의 한 단원만 선택해 집중 평가합니다.</p><div class="mt-5 text-xs font-extrabold text-teal-700 dark:text-teal-300">화학 단원평가 →</div></a>
+      <a href="unit_test.html?subject=geometry" class="dashboard-card geo block min-h-0"><div class="dashboard-icon">◇</div><div class="dashboard-meta">SHARED UNIT TEST</div><div class="dashboard-title">기하 단원평가</div><p class="dashboard-desc">공통 단원평가 템플릿으로 기하의 한 단원만 선택해 집중 평가합니다.</p><div class="mt-5 text-xs font-extrabold text-violet-700 dark:text-violet-300">기하 단원평가 →</div></a>
+      <a href="unit_test.html?subject=physics" class="dashboard-card phys block min-h-0"><div class="dashboard-icon">⚡</div><div class="dashboard-meta">SHARED UNIT TEST</div><div class="dashboard-title">물리학 단원평가</div><p class="dashboard-desc">공통 단원평가 템플릿으로 물리학의 한 단원만 선택해 집중 평가합니다.</p><div class="mt-5 text-xs font-extrabold text-blue-700 dark:text-blue-300">물리학 단원평가 →</div></a>
     </section>
     <section class="mt-8">
       <a href="mock_exam.html" class="dashboard-card block min-h-0">
