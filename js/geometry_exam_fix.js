@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const geometryQuestions = [
+  const QUESTIONS = [
     ['y²=20x의 기울기 2인 접선의 방정식은?', ['y=2x+5/2','y=2x+10','y=2x-5/2','y=2x+4'], 0, 'y²=4px에서 p=5이고 접선은 y=mx+p/m이므로 y=2x+5/2이다.', '계산형'],
     ['x²/25+y²/9=1의 장축 길이는?', ['5','6','10','18'], 2, 'a=5이므로 장축의 길이는 2a=10이다.', '기본 계산'],
     ['타원의 두 초점까지 거리의 합이 16이고 단축의 길이가 12일 때 a,b는?', ['a=8,b=6','a=16,b=12','a=6,b=8','a=8,b=12'], 0, '2a=16, 2b=12이므로 a=8,b=6이다.', '조건 추론'],
@@ -24,51 +24,70 @@
     ['다음 중 단순 암기보다 조건 해석이 가장 중요한 문제는?', ['포물선의 준선 위치','정사영 비율로 θ 역산','x,y,z의 기호 읽기','타원의 장축 이름'], 1, '정사영 값을 이용해 각도를 역산하는 문제는 공식과 조건을 함께 해석해야 한다.', '유형 판단']
   ];
 
-  const originalStartExam = window.startExam;
-  let state = { index: 0, answers: Array(20).fill(null), left: 2700, timer: null };
+  const state = { index: 0, answers: Array(20).fill(null), left: 2700, timer: null };
   const app = () => document.getElementById('app');
-  const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
-  const esc = s => String(s).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = s => String(Math.max(0, Math.floor(s / 60))).padStart(2, '0') + ':' + String(Math.max(0, s) % 60).padStart(2, '0');
+  const safe = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
-  function ensureStyle() {
+  function addStyle() {
     if (document.getElementById('geometry-fix-style')) return;
-    const st = document.createElement('style'); st.id = 'geometry-fix-style';
-    st.textContent = `
-      .gf-shell{max-width:1180px;margin:0 auto;padding:24px 18px 70px}.gf-top{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px 18px;margin-bottom:18px}.dark .gf-top{background:#0f172a;border-color:#334155}.gf-sub{font-weight:900;color:#6d28d9}.gf-timer{margin-left:auto;font-size:24px;font-weight:900}.gf-timer.warn{color:#dc2626}.gf-layout{display:grid;grid-template-columns:220px 1fr;gap:18px}.gf-map,.gf-panel{background:#fff;border:1px solid #e5e7eb;border-radius:20px}.dark .gf-map,.dark .gf-panel{background:#0f172a;border-color:#334155}.gf-map{padding:18px;height:max-content;position:sticky;top:88px}.gf-map h3{margin:0 0 12px}.gf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.gf-dot{border:1px solid #d1d5db;background:#fff;border-radius:9px;padding:8px 0;font-size:11px;font-weight:800;cursor:pointer}.dark .gf-dot{background:#111827;color:#e2e8f0;border-color:#475569}.gf-dot.current{background:#111827;color:#fff}.gf-dot.answered:not(.current){background:#eff6ff;color:#1d4ed8}.dark .gf-dot.answered:not(.current){background:#172554;color:#bfdbfe}.gf-panel{padding:32px;min-height:500px}.gf-no{font-size:11px;font-weight:900;color:#94a3b8;letter-spacing:.12em}.gf-panel h2{font-size:24px;line-height:1.65;margin:10px 0 28px}.gf-choices{display:grid;gap:11px}.gf-choice{display:flex;gap:12px;padding:15px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer}.dark .gf-choice{background:#0b1220;border-color:#334155}.gf-choice.sel{border-color:#2563eb;background:#eff6ff}.dark .gf-choice.sel{background:#172554;border-color:#3b82f6}.gf-key{font-weight:900;min-width:22px}.gf-actions{display:flex;justify-content:space-between;margin-top:30px}.gf-btn{border-radius:10px;padding:10px 17px;font-weight:900;cursor:pointer}.gf-prev{background:#fff;color:#111;border:1px solid #d1d5db}.dark .gf-prev{background:#0f172a;color:#e2e8f0;border-color:#475569}.gf-next{background:#111827;color:#fff;border:1px solid #111827}.dark .gf-next{background:#f8fafc;color:#0f172a}.gf-result{text-align:center}.gf-score{font-size:56px;font-weight:950;margin:18px 0}.gf-review{margin-top:18px;text-align:left}.gf-item{padding:14px 0;border-bottom:1px solid #e5e7eb}.dark .gf-item{border-color:#334155}.gf-ok{color:#047857;font-weight:900}.gf-bad{color:#b91c1c;font-weight:900}.gf-answer{font-size:12px;margin-top:5px;color:#64748b}.dark .gf-answer{color:#94a3b8}@media(max-width:900px){.gf-layout{grid-template-columns:1fr}.gf-map{position:static}.gf-panel{padding:22px}}`;
-    document.head.appendChild(st);
+    const style = document.createElement('style');
+    style.id = 'geometry-fix-style';
+    style.textContent = `
+      .gf-shell{max-width:1180px;margin:0 auto;padding:24px 18px 70px}
+      .gf-top{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px 18px;margin-bottom:18px}
+      .dark .gf-top{background:#0f172a;border-color:#334155}
+      .gf-sub{font-weight:900;color:#6d28d9}.gf-timer{margin-left:auto;font-size:24px;font-weight:900}.gf-timer.warn{color:#dc2626}
+      .gf-layout{display:grid;grid-template-columns:220px 1fr;gap:18px}.gf-map,.gf-panel{background:#fff;border:1px solid #e5e7eb;border-radius:20px}.dark .gf-map,.dark .gf-panel{background:#0f172a;border-color:#334155}
+      .gf-map{padding:18px;height:max-content;position:sticky;top:88px}.gf-map h3{margin:0 0 12px}.gf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+      .gf-dot{border:1px solid #d1d5db;background:#fff;border-radius:9px;padding:8px 0;font-size:11px;font-weight:800;cursor:pointer}.dark .gf-dot{background:#111827;color:#e2e8f0;border-color:#475569}.gf-dot.current{background:#111827;color:#fff}.gf-dot.answered:not(.current){background:#eff6ff;color:#1d4ed8}
+      .gf-panel{padding:32px;min-height:500px}.gf-no{font-size:11px;font-weight:900;color:#94a3b8;letter-spacing:.12em}.gf-panel h2{font-size:24px;line-height:1.65;margin:10px 0 28px}.gf-choices{display:grid;gap:11px}
+      .gf-choice{display:flex;gap:12px;padding:15px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer}.dark .gf-choice{background:#0b1220;border-color:#334155}.gf-choice.sel{border-color:#2563eb;background:#eff6ff}.dark .gf-choice.sel{background:#172554;border-color:#3b82f6}.gf-key{font-weight:900;min-width:22px}
+      .gf-actions{display:flex;justify-content:space-between;margin-top:30px}.gf-btn{border-radius:10px;padding:10px 17px;font-weight:900;cursor:pointer}.gf-prev{background:#fff;color:#111;border:1px solid #d1d5db}.dark .gf-prev{background:#0f172a;color:#e2e8f0;border-color:#475569}.gf-next{background:#111827;color:#fff;border:1px solid #111827}.dark .gf-next{background:#f8fafc;color:#0f172a}
+      .gf-result{text-align:center}.gf-score{font-size:56px;font-weight:950;margin:18px 0}.gf-review{margin-top:18px;text-align:left}.gf-item{padding:14px 0;border-bottom:1px solid #e5e7eb}.dark .gf-item{border-color:#334155}.gf-ok{color:#047857;font-weight:900}.gf-bad{color:#b91c1c;font-weight:900}.gf-answer{font-size:12px;margin-top:5px;color:#64748b}.dark .gf-answer{color:#94a3b8}
+      @media(max-width:900px){.gf-layout{grid-template-columns:1fr}.gf-map{position:static}.gf-panel{padding:22px}}
+    `;
+    document.head.appendChild(style);
   }
 
-  function renderMap() {
-    return `<aside class="gf-map"><h3>문제 번호</h3><div class="gf-grid">${geometryQuestions.map((_,i)=>`<button class="gf-dot ${i===state.index?'current ':''}${state.answers[i]!==null?'answered':''}" onclick="gfGo(${i})">${i+1}</button>`).join('')}</div><div style="font-size:11px;color:#94a3b8;line-height:1.7;margin-top:14px">총 20문제 · 제한시간 45분<br>선택한 답은 자동으로 저장됩니다.</div></aside>`;
+  function mapHtml() {
+    return `<aside class="gf-map"><h3>문제 번호</h3><div class="gf-grid">${QUESTIONS.map((_,i) => `<button class="gf-dot ${i===state.index?'current ':''}${state.answers[i]!==null?'answered':''}" onclick="gfGo(${i})">${i+1}</button>`).join('')}</div><div style="font-size:11px;color:#94a3b8;line-height:1.7;margin-top:14px">총 20문제 · 제한시간 45분<br>선택한 답은 자동으로 저장됩니다.</div></aside>`;
   }
 
   function render() {
-    const q = geometryQuestions[state.index];
-    app().innerHTML = `<div class="gf-shell"><div class="gf-top"><span class="gf-sub">기하</span><strong>고난도 모의고사</strong><button class="gf-btn gf-prev" style="margin-left:12px" onclick="gfLeave()">나가기</button><div class="gf-timer ${state.left<=300?'warn':''}">${fmt(state.left)}</div></div><div class="gf-layout">${renderMap()}<section class="gf-panel"><div class="gf-no">QUESTION ${state.index+1} / 20 · ${esc(q[4])}</div><h2>${esc(q[0])}</h2><div class="gf-choices">${q[1].map((c,i)=>`<label class="gf-choice ${state.answers[state.index]===i?'sel':''}"><input type="radio" name="gfq" ${state.answers[state.index]===i?'checked':''} onchange="gfPick(${i})"><span class="gf-key">${String.fromCharCode(9312+i)}</span><span>${esc(c)}</span></label>`).join('')}</div><div class="gf-actions"><button class="gf-btn gf-prev" onclick="gfPrev()" ${state.index===0?'disabled':''}>← 이전</button>${state.index===19?'<button class="gf-btn gf-next" onclick="gfSubmit()">제출하고 채점</button>':'<button class="gf-btn gf-next" onclick="gfNext()">다음 →</button>'}</div></section></div></div>`;
+    const q = QUESTIONS[state.index];
+    app().innerHTML = `<div class="gf-shell"><div class="gf-top"><span class="gf-sub">기하</span><strong>고난도 모의고사</strong><button class="gf-btn gf-prev" style="margin-left:12px" onclick="gfLeave()">나가기</button><div class="gf-timer ${state.left<=300?'warn':''}">${fmt(state.left)}</div></div><div class="gf-layout">${mapHtml()}<section class="gf-panel"><div class="gf-no">QUESTION ${state.index+1} / 20 · ${safe(q[4])}</div><h2>${safe(q[0])}</h2><div class="gf-choices">${q[1].map((choice,i)=>`<label class="gf-choice ${state.answers[state.index]===i?'sel':''}"><input type="radio" name="gfq" ${state.answers[state.index]===i?'checked':''} onchange="gfPick(${i})"><span class="gf-key">${String.fromCharCode(9312+i)}</span><span>${safe(choice)}</span></label>`).join('')}</div><div class="gf-actions"><button class="gf-btn gf-prev" onclick="gfPrev()" ${state.index===0?'disabled':''}>← 이전</button>${state.index===19?'<button class="gf-btn gf-next" onclick="gfSubmit()">제출하고 채점</button>':'<button class="gf-btn gf-next" onclick="gfNext()">다음 →</button>'}</div></section></div></div>`;
   }
 
   function startGeometry() {
     clearInterval(state.timer);
-    state = { index: 0, answers: Array(20).fill(null), left: 2700, timer: null };
-    ensureStyle(); render();
+    state.index = 0; state.answers = Array(20).fill(null); state.left = 2700;
+    addStyle(); render();
     state.timer = setInterval(() => {
-      state.left--;
-      const el = document.querySelector('.gf-timer');
-      if (el) { el.textContent = fmt(state.left); el.classList.toggle('warn', state.left<=300); }
+      state.left -= 1;
+      const timer = document.querySelector('.gf-timer');
+      if (timer) { timer.textContent = fmt(state.left); timer.classList.toggle('warn', state.left <= 300); }
       if (state.left <= 0) submit(true);
     }, 1000);
   }
-  function pick(i){ state.answers[state.index]=i; render(); }
-  function next(){ if(state.index<19){state.index++;render();} }
-  function prev(){ if(state.index>0){state.index--;render();} }
-  function go(i){ if(i>=0&&i<20){state.index=i;render();} }
-  function leave(){ clearInterval(state.timer); if(originalStartExam) originalStartExam('home'); else location.reload(); }
-  function submit(auto=false){
+
+  function pick(i) { state.answers[state.index] = i; render(); }
+  function next() { if (state.index < 19) { state.index += 1; render(); } }
+  function prev() { if (state.index > 0) { state.index -= 1; render(); } }
+  function go(i) { if (i >= 0 && i < 20) { state.index = i; render(); } }
+  function leave() { clearInterval(state.timer); window.location.href = 'mock_exam.html'; }
+
+  function submit(auto = false) {
     clearInterval(state.timer);
-    const score = geometryQuestions.reduce((n,q,i)=>n+(state.answers[i]===q[2]?1:0),0);
-    app().innerHTML = `<div class="gf-shell"><section class="gf-panel gf-result"><div style="font-size:12px;color:#94a3b8;font-weight:900">기하 모의고사 ${auto?' · 시간 종료':''}</div><h1>채점 결과</h1><div class="gf-score">${score*5}<span style="font-size:20px">점</span></div><p style="color:#64748b">20문제 중 ${score}문제를 맞혔습니다.</p><div style="margin-top:22px"><button class="gf-btn gf-prev" onclick="gfLeave()">모의고사 선택으로</button></div><div class="gf-review"><h2>문제별 해설</h2>${geometryQuestions.map((q,i)=>{const ok=state.answers[i]===q[2];const mine=state.answers[i]===null?'미응답':q[1][state.answers[i]];return `<div class="gf-item"><div><b>${i+1}. ${esc(q[0])}</b> <span class="${ok?'gf-ok':'gf-bad'}">${ok?'정답':'오답'}</span></div><div class="gf-answer">내 답: ${esc(mine)} · 정답: ${esc(q[1][q[2]])}</div><div class="gf-answer">해설: ${esc(q[3])}</div></div>`;}).join('')}</div></section></div>`;
+    const correct = QUESTIONS.reduce((sum,q,i) => sum + (state.answers[i] === q[2] ? 1 : 0), 0);
+    app().innerHTML = `<div class="gf-shell"><section class="gf-panel gf-result"><div style="font-size:12px;color:#94a3b8;font-weight:900">기하 모의고사${auto?' · 시간 종료':''}</div><h1>채점 결과</h1><div class="gf-score">${correct*5}<span style="font-size:20px">점</span></div><p style="color:#64748b">20문제 중 ${correct}문제를 맞혔습니다.</p><div style="margin-top:22px"><button class="gf-btn gf-prev" onclick="gfLeave()">모의고사 선택으로</button></div><div class="gf-review"><h2>문제별 해설</h2>${QUESTIONS.map((q,i)=>{const ok=state.answers[i]===q[2];const mine=state.answers[i]===null?'미응답':q[1][state.answers[i]];return `<div class="gf-item"><div><b>${i+1}. ${safe(q[0])}</b> <span class="${ok?'gf-ok':'gf-bad'}">${ok?'정답':'오답'}</span></div><div class="gf-answer">내 답: ${safe(mine)} · 정답: ${safe(q[1][q[2]])}</div><div class="gf-answer">해설: ${safe(q[3])}</div></div>`;}).join('')}</div></section></div>`;
   }
 
-  window.gfPick=pick; window.gfNext=next; window.gfPrev=prev; window.gfGo=go; window.gfLeave=leave; window.gfSubmit=submit;
-  window.startExam = function(key){ if(key==='geometry') startGeometry(); else if(originalStartExam) originalStartExam(key); };
+  window.gfPick = pick; window.gfNext = next; window.gfPrev = prev; window.gfGo = go; window.gfLeave = leave; window.gfSubmit = submit;
+
+  const originalStartExam = window.startExam;
+  window.startExam = key => {
+    if (key === 'geometry') startGeometry();
+    else if (typeof originalStartExam === 'function') originalStartExam(key);
+  };
 })();
