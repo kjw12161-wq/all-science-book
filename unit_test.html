@@ -16,6 +16,279 @@
     </div>
   </header>
   <main id="unitTestApp"></main>
-  <script src="js/unit_test_template.js"></script>
+  <script src="js/unit_test_template.js?v=20260917-03"></script>
+
+  <script>
+  (() => {
+    'use strict';
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const C = { blue:'#2563eb', red:'#dc2626', green:'#16a34a', ink:'#0f172a', muted:'#64748b', grid:'#e2e8f0' };
+
+    function defs(){
+      return `<defs>
+        <pattern id="pGrid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern>
+        <linearGradient id="pHead" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#334155"/></linearGradient>
+        <filter id="pShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0f172a" flood-opacity=".16"/></filter>
+        <marker id="pBlue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563eb"/></marker>
+        <marker id="pRed" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#dc2626"/></marker>
+        <marker id="pGreen" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#16a34a"/></marker>
+        <marker id="pGray" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#64748b"/></marker>
+      </defs>`;
+    }
+
+    function shell(title, tag, body, h=360){
+      return `<figure class="ut-diagram ut-premium" data-premium="1">
+        <svg viewBox="0 0 900 ${h}" role="img" aria-label="${esc(title)} 그림" preserveAspectRatio="xMidYMid meet">
+          ${defs()}
+          <rect x="1" y="1" width="898" height="${h-2}" rx="20" fill="var(--theme-surface)" stroke="var(--theme-border)" stroke-width="2"/>
+          <rect x="2" y="2" width="896" height="58" rx="19" fill="url(#pHead)"/>
+          <text x="28" y="22" fill="#cbd5e1" font-size="10" font-weight="800" letter-spacing="2.2">PHYSICS FIGURE · ${esc(tag)}</text>
+          <text x="28" y="46" fill="#ffffff" font-size="20" font-weight="850">${esc(title)}</text>
+          <rect x="24" y="76" width="852" height="${h-100}" rx="14" fill="url(#pGrid)" stroke="${C.grid}" stroke-width="1"/>
+          <g font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-size="13" fill="${C.ink}">${body}</g>
+        </svg>
+        <figcaption>문제 조건과 힘·운동 관계를 한눈에 볼 수 있도록 구성한 물리 도식</figcaption>
+      </figure>`;
+    }
+
+    function arrow(x1,y1,x2,y2,color='blue',w=4){ return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${C[color]}" stroke-width="${w}" stroke-linecap="round" marker-end="url(#p${color[0].toUpperCase()+color.slice(1)})"/>`; }
+    const circ=(x,y,r,fill='white',stroke=C.muted,sw=2)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+
+    function fIncline(){
+      return shell('비탈면 + 도르래의 힘의 평형','FORCE BALANCE',`
+        <path d="M95 300L330 125L448 300Z" fill="#f1f5f9" stroke="${C.muted}" stroke-width="3"/>
+        <path d="M805 300L570 125L452 300Z" fill="#f1f5f9" stroke="${C.muted}" stroke-width="3"/>
+        ${circ(450,112,22,'#fff',C.ink,3)}<line x1="450" y1="90" x2="450" y2="134" stroke="${C.muted}" stroke-width="3"/>
+        <line x1="298" y1="152" x2="429" y2="113" stroke="${C.blue}" stroke-width="5"/>
+        <line x1="471" y1="113" x2="602" y2="152" stroke="${C.green}" stroke-width="5"/>
+        <rect x="240" y="172" width="70" height="44" rx="8" transform="rotate(-32 275 194)" fill="#e2e8f0" stroke="${C.ink}" stroke-width="2" filter="url(#pShadow)"/>
+        <rect x="590" y="172" width="70" height="44" rx="8" transform="rotate(32 625 194)" fill="#e2e8f0" stroke="${C.ink}" stroke-width="2" filter="url(#pShadow)"/>
+        ${arrow(274,194,330,160)}${arrow(626,194,570,160,'green')}
+        ${arrow(274,194,243,253,'red')}${arrow(626,194,657,253,'red')}
+        <text x="324" y="151" fill="${C.blue}" font-weight="850">T</text><text x="575" y="151" fill="${C.green}" font-weight="850">T</text>
+        <text x="205" y="275" fill="${C.red}" font-weight="850">m₁g sinθ₁</text><text x="664" y="275" fill="${C.red}" font-weight="850">m₂g sinθ₂</text>
+        <text x="188" y="292" fill="${C.muted}">θ₁</text><text x="701" y="292" fill="${C.muted}">θ₂</text>
+        <rect x="360" y="326" width="180" height="24" rx="12" fill="#eef4ff" stroke="#bfdbfe"/><text x="450" y="343" text-anchor="middle" fill="#1d4ed8" font-size="12" font-weight="800">평형: T = m₁g sinθ₁ = m₂g sinθ₂</text>`);
+    }
+
+    function fTension(){
+      return shell('두 장력의 벡터 평형','TENSION / LAMI',`
+        <line x1="110" y1="112" x2="790" y2="112" stroke="${C.ink}" stroke-width="10" stroke-linecap="round"/>
+        <line x1="430" y1="112" x2="300" y2="246" stroke="${C.blue}" stroke-width="5" marker-end="url(#pBlue)"/>
+        <line x1="470" y1="112" x2="600" y2="246" stroke="${C.green}" stroke-width="5" marker-end="url(#pGreen)"/>
+        ${circ(450,278,32,'#e2e8f0',C.ink,3)}
+        <line x1="450" y1="310" x2="450" y2="338" stroke="${C.red}" stroke-width="5" marker-end="url(#pRed)"/>
+        <path d="M398 115A65 65 0 0 1 352 175" fill="none" stroke="${C.muted}" stroke-width="2"/><text x="355" y="139" fill="${C.muted}">60°</text>
+        <path d="M502 115A65 65 0 0 0 548 175" fill="none" stroke="${C.muted}" stroke-width="2"/><text x="526" y="139" fill="${C.muted}">30°</text>
+        <text x="270" y="236" fill="${C.blue}" font-weight="850">T_A</text><text x="604" y="236" fill="${C.green}" font-weight="850">T_B</text><text x="460" y="337" fill="${C.red}" font-weight="850">Mg</text>
+        <rect x="320" y="323" width="260" height="24" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/><text x="450" y="340" text-anchor="middle" fill="#15803d" font-size="12" font-weight="800">수평 성분이 서로 상쇄 · 연직 성분이 Mg를 지지</text>`);
+    }
+
+    function fRod(){
+      return shell('받침대 반력과 돌림힘 평형','TORQUE',`
+        <line x1="100" y1="180" x2="800" y2="180" stroke="${C.ink}" stroke-width="14" stroke-linecap="round" filter="url(#pShadow)"/>
+        <path d="M190 180l-36 62h72z" fill="#dbeafe" stroke="${C.blue}" stroke-width="3"/><path d="M670 180l-36 62h72z" fill="#dcfce7" stroke="${C.green}" stroke-width="3"/>
+        ${arrow(190,180,190,120,'blue')}${arrow(670,180,670,120,'green')}${arrow(340,180,340,96,'red')}${arrow(800,180,800,88,'red')}
+        <text x="178" y="112" fill="${C.blue}" font-weight="850">R_P</text><text x="678" y="112" fill="${C.green}" font-weight="850">R_Q</text><text x="320" y="88" fill="${C.red}" font-weight="850">Mg</text><text x="802" y="80" fill="${C.red}" font-weight="850">mg</text>
+        <text x="174" y="267" fill="${C.muted}" font-weight="800">P</text><text x="662" y="267" fill="${C.muted}" font-weight="800">Q</text>
+        <line x1="190" y1="292" x2="670" y2="292" stroke="${C.muted}" stroke-width="2"/><line x1="190" y1="286" x2="190" y2="298" stroke="${C.muted}"/><line x1="670" y1="286" x2="670" y2="298" stroke="${C.muted}"/>
+        <text x="430" y="286" text-anchor="middle" fill="${C.muted}" font-size="12">P–Q = 7L/12</text>
+        <rect x="270" y="317" width="360" height="25" rx="12" fill="#f8fafc" stroke="#cbd5e1"/><text x="450" y="334" text-anchor="middle" fill="${C.ink}" font-size="12" font-weight="800">ΣFᵧ = 0  ·  Στ = 0  ·  임계조건에서는 한 반력이 0</text>`);
+    }
+
+    function fSlopeProjectile(){
+      return shell('경사면으로 발사된 물체의 충돌','PROJECTILE',`
+        <line x1="105" y1="300" x2="790" y2="300" stroke="${C.muted}" stroke-width="2"/>
+        <line x1="110" y1="300" x2="700" y2="125" stroke="${C.ink}" stroke-width="5"/>
+        <path d="M145 292Q330 55 590 180" fill="none" stroke="${C.blue}" stroke-width="5"/>
+        ${circ(145,292,8,C.blue,C.blue,1)}${circ(590,180,8,C.blue,C.blue,1)}
+        ${arrow(145,292,250,232)}
+        <path d="M170 290A50 50 0 0 1 222 261" fill="none" stroke="${C.muted}" stroke-width="2"/><text x="204" y="279" fill="${C.muted}">30°</text>
+        <text x="252" y="228" fill="${C.blue}" font-weight="850">v₀</text><text x="604" y="179" fill="${C.blue}" font-weight="850">충돌점</text>
+        <line x1="590" y1="180" x2="590" y2="300" stroke="${C.muted}" stroke-dasharray="6 6"/><text x="598" y="242" fill="${C.muted}" font-size="12">높이 변화</text>`);
+    }
+
+    function fTwoCollision(){
+      return shell('두 투사체의 충돌 조건','RELATIVE MOTION',`
+        <line x1="125" y1="98" x2="125" y2="305" stroke="${C.ink}" stroke-width="7"/><line x1="125" y1="305" x2="785" y2="305" stroke="${C.ink}" stroke-width="4"/>
+        <path d="M133 120Q315 132 478 205" fill="none" stroke="${C.blue}" stroke-width="5"/><path d="M720 300Q602 232 465 190" fill="none" stroke="${C.green}" stroke-width="5"/>
+        ${arrow(133,120,205,120)}${arrow(720,300,650,272,'green')}
+        ${circ(133,120,9,C.blue,C.blue,1)}${circ(465,190,10,C.red,C.red,1)}
+        <text x="107" y="108" fill="${C.blue}" font-weight="850">A</text><text x="728" y="315" fill="${C.green}" font-weight="850">B</text><text x="478" y="182" fill="${C.red}" font-weight="850">동시 충돌</text>
+        <line x1="78" y1="120" x2="78" y2="305" stroke="${C.muted}" stroke-width="2"/><text x="58" y="220" fill="${C.muted}" font-size="12">H</text><line x1="465" y1="325" x2="720" y2="325" stroke="${C.muted}" stroke-width="2"/><text x="592" y="345" text-anchor="middle" fill="${C.muted}" font-size="12">수평거리 L</text>`);
+    }
+
+    function fEnvelope(){
+      return shell('포물선 포락선과 발사각의 경계','ENVELOPE / DISCRIMINANT',`
+        <line x1="105" y1="300" x2="800" y2="300" stroke="${C.muted}" stroke-width="2" marker-end="url(#pGray)"/>
+        <line x1="105" y1="300" x2="105" y2="105" stroke="${C.muted}" stroke-width="2" marker-end="url(#pGray)"/>
+        <path d="M120 300Q340 44 770 300" fill="none" stroke="${C.blue}" stroke-width="5"/>
+        <path d="M120 300Q275 90 610 250M120 300Q430 92 745 285" fill="none" stroke="#94a3b8" stroke-width="2"/>
+        ${circ(545,142,9,C.red,C.red,1)}<line x1="545" y1="142" x2="545" y2="300" stroke="${C.muted}" stroke-dasharray="6 6"/>
+        <text x="558" y="138" fill="${C.red}" font-weight="850">경계 목표점</text><text x="86" y="118" fill="${C.muted}" font-size="12">y</text><text x="780" y="320" fill="${C.muted}" font-size="12">x</text>
+        <rect x="245" y="320" width="410" height="25" rx="12" fill="#eef4ff" stroke="#bfdbfe"/><text x="450" y="337" text-anchor="middle" fill="#1d4ed8" font-size="12" font-weight="800">판별식 D = 0 → 가능한 발사각이 하나인 경계</text>`);
+    }
+
+    function fConical(){
+      return shell('원뿔진자의 장력과 구심력','CONICAL PENDULUM',`
+        ${circ(450,100,7,C.ink,C.ink,1)}<line x1="450" y1="100" x2="620" y2="245" stroke="${C.blue}" stroke-width="6"/>
+        ${circ(620,245,25,'#e2e8f0',C.ink,3)}
+        ${arrow(620,245,620,318,'red')}${arrow(620,245,730,245,'green')}${arrow(620,245,530,170,'blue')}
+        <path d="M450 100A55 55 0 0 1 498 146" fill="none" stroke="${C.muted}" stroke-width="2"/><text x="500" y="133" fill="${C.muted}">θ</text>
+        <text x="720" y="249" fill="${C.green}" font-weight="850">F_c</text><text x="626" y="334" fill="${C.red}" font-weight="850">mg</text><text x="520" y="165" fill="${C.blue}" font-weight="850">T′</text>
+        <circle cx="620" cy="245" r="70" fill="none" stroke="#94a3b8" stroke-dasharray="6 6"/><text x="620" y="335" text-anchor="middle" fill="${C.muted}" font-size="12">수평 원운동</text>`);
+    }
+
+    function fSpring(){
+      return shell('용수철 단진동의 위치와 에너지','SPRING SHM',`
+        <rect x="105" y="145" width="18" height="140" rx="5" fill="#cbd5e1" stroke="${C.ink}" stroke-width="2"/>
+        <path d="M123 215q20-55 40 0t40 0t40 0t40 0t40 0" fill="none" stroke="${C.ink}" stroke-width="4"/>
+        <rect x="325" y="184" width="92" height="62" rx="10" fill="#e2e8f0" stroke="${C.ink}" stroke-width="3" filter="url(#pShadow)"/>
+        <line x1="510" y1="128" x2="510" y2="302" stroke="${C.muted}" stroke-width="2" stroke-dasharray="6 6"/>
+        <line x1="510" y1="145" x2="615" y2="145" stroke="${C.blue}" stroke-width="4" marker-end="url(#pBlue)"/><line x1="510" y1="274" x2="562" y2="274" stroke="${C.green}" stroke-width="4" marker-end="url(#pGreen)"/>
+        <text x="622" y="149" fill="${C.blue}" font-weight="850">A</text><text x="570" y="278" fill="${C.green}" font-weight="850">x=A/2</text><text x="450" y="315" fill="${C.muted}" font-size="12">평형점</text>
+        <rect x="280" y="320" width="340" height="25" rx="12" fill="#f8fafc" stroke="#cbd5e1"/><text x="450" y="337" text-anchor="middle" fill="${C.ink}" font-size="12" font-weight="800">E = K + U = ½kA²  (에너지 보존)</text>`);
+    }
+
+    function fPhase(){
+      return shell('두 단진동의 위상차와 합성','PHASE / SUPERPOSITION',`
+        ${circ(235,205,82,'none',C.muted,2)}${arrow(235,205,315,205)}${arrow(235,205,275,136,'green')}
+        <path d="M286 205A52 52 0 0 0 259 158" fill="none" stroke="${C.muted}" stroke-width="2"/><text x="282" y="178" fill="${C.muted}">60°</text>
+        <text x="320" y="209" fill="${C.blue}" font-weight="850">A</text><text x="280" y="130" fill="${C.green}" font-weight="850">A</text>
+        <line x1="420" y1="138" x2="805" y2="138" stroke="${C.muted}" stroke-width="2"/>
+        <path d="M435 250Q490 100 545 250T655 250" fill="none" stroke="${C.blue}" stroke-width="4"/><path d="M435 250Q490 118 545 250T655 250" fill="none" stroke="${C.green}" stroke-width="4"/>
+        <text x="448" y="290" fill="${C.muted}" font-size="12">두 진동의 합성 파형</text>
+        <rect x="585" y="315" width="190" height="25" rx="12" fill="#eef4ff" stroke="#bfdbfe"/><text x="680" y="332" text-anchor="middle" fill="#1d4ed8" font-size="12" font-weight="800">R = 2A cos(Δφ/2)</text>`);
+    }
+
+    function fOrbit(kind){
+      if(kind==='ellipse') return shell('타원 궤도의 근지점과 원지점','KEPLER / ANGULAR MOMENTUM',`
+        <ellipse cx="450" cy="215" rx="305" ry="105" fill="none" stroke="${C.blue}" stroke-width="5"/>
+        ${circ(300,215,8,C.red,C.red,1)}${circ(700,215,8,C.green,C.green,1)}${circ(450,215,11,'#e2e8f0',C.ink,2)}
+        <line x1="300" y1="215" x2="450" y2="215" stroke="${C.muted}" stroke-dasharray="6 6"/><line x1="450" y1="215" x2="700" y2="215" stroke="${C.muted}" stroke-dasharray="6 6"/>
+        ${arrow(300,215,355,160)}${arrow(700,215,645,264,'green')}
+        <text x="248" y="192" fill="${C.red}" font-weight="850">근지점 R</text><text x="700" y="194" fill="${C.green}" font-weight="850">원지점 3R</text><text x="462" y="207" fill="${C.muted}">행성</text><text x="364" y="154" fill="${C.blue}" font-weight="850">v</text><text x="635" y="282" fill="${C.green}" font-weight="850">v/3</text>`);
+      if(kind==='kepler3') return shell('궤도 크기와 공전 주기','KEPLER 3RD LAW',`
+        ${circ(190,215,28,'#e2e8f0',C.ink,3)}<ellipse cx="560" cy="215" rx="205" ry="88" fill="none" stroke="${C.blue}" stroke-width="5"/>
+        <line x1="355" y1="215" x2="765" y2="215" stroke="${C.muted}" stroke-dasharray="6 6"/>
+        <circle cx="535" cy="215" r="6" fill="${C.red}"/><text x="140" y="270" fill="${C.muted}" font-size="12">행성 중심</text><text x="450" y="320" fill="#1d4ed8" font-size="14" font-weight="850">T² ∝ a³</text><text x="450" y="342" text-anchor="middle" fill="${C.muted}" font-size="12">장반경 a가 커질수록 주기 T가 증가</text>`);
+      if(kind==='escape') return shell('탈출속도와 역학적 에너지','ESCAPE VELOCITY',`
+        <circle cx="450" cy="292" r="150" fill="#dbeafe" stroke="${C.ink}" stroke-width="3"/>
+        ${circ(450,148,9,C.red,C.red,1)}${arrow(450,148,450,86)}
+        <text x="464" y="95" fill="${C.blue}" font-weight="850">vₑ</text><text x="520" y="250" fill="${C.ink}" font-weight="850">M</text><text x="522" y="270" fill="${C.muted}" font-size="12">R</text>
+        <path d="M665 138Q760 150 800 112" fill="none" stroke="${C.muted}" stroke-width="2" stroke-dasharray="6 6"/><text x="625" y="98" fill="${C.muted}" font-size="12">무한대: U→0, K→0</text>`);
+      return shell('중력장 속 궤도 에너지','ORBITAL ENERGY',`
+        <ellipse cx="450" cy="215" rx="300" ry="100" fill="none" stroke="${C.blue}" stroke-width="5"/><circle cx="300" cy="215" r="9" fill="${C.red}"/><circle cx="660" cy="150" r="9" fill="${C.green}"/>
+        <rect x="170" y="110" width="160" height="22" rx="11" fill="#fee2e2"/><rect x="570" y="270" width="160" height="22" rx="11" fill="#dcfce7"/>
+        <text x="250" y="126" text-anchor="middle" fill="#b91c1c" font-size="12" font-weight="850">속력 큼 · r 작음</text><text x="650" y="286" text-anchor="middle" fill="#15803d" font-size="12" font-weight="850">속력 작음 · r 큼</text><text x="450" y="335" text-anchor="middle" fill="${C.muted}" font-size="12">궤도 전체에서 역학적 에너지 보존</text>`);
+    }
+
+    function fSimultaneity(){
+      return shell('기차 속 빛 신호와 동시성','SPECIAL RELATIVITY',`
+        <rect x="130" y="130" width="640" height="130" rx="18" fill="#f8fafc" stroke="${C.ink}" stroke-width="3"/>
+        ${circ(450,195,10,C.blue,C.blue,1)}${arrow(450,195,160,195)}${arrow(450,195,740,195)}
+        <text x="424" y="171" fill="${C.blue}" font-weight="850">광원</text><text x="118" y="117" fill="${C.muted}" font-size="12">뒤쪽 벽</text><text x="742" y="117" text-anchor="end" fill="${C.muted}" font-size="12">앞쪽 벽</text>
+        <line x1="105" y1="290" x2="790" y2="290" stroke="${C.muted}" stroke-width="2" marker-end="url(#pGray)"/><text x="450" y="326" text-anchor="middle" fill="${C.muted}" font-size="12">우주선 운동 방향 →</text>`);
+    }
+    function fMuon(){
+      return shell('뮤온의 시간 팽창과 지상 검출','TIME DILATION',`
+        <line x1="120" y1="300" x2="790" y2="300" stroke="${C.muted}" stroke-width="3"/>
+        <path d="M145 270Q440 78 760 270" fill="none" stroke="${C.blue}" stroke-width="5"/>
+        ${circ(145,270,9,C.blue,C.blue,1)}${circ(760,270,9,C.red,C.red,1)}
+        <text x="122" y="326" fill="${C.muted}" font-size="12">생성</text><text x="747" y="326" fill="${C.muted}" font-size="12">붕괴</text><text x="450" y="118" text-anchor="middle" fill="${C.blue}" font-size="15" font-weight="850">Δt = γΔt₀</text>
+        <rect x="305" y="205" width="130" height="24" rx="12" fill="#eef4ff"/><text x="370" y="222" text-anchor="middle" fill="#1d4ed8" font-size="11" font-weight="800">지상 관측 시간</text>`);
+    }
+    function fLength(){
+      return shell('정지계의 고유길이와 이동계의 길이 수축','LENGTH CONTRACTION',`
+        <rect x="135" y="138" width="255" height="48" rx="12" fill="#dcfce7" stroke="${C.green}" stroke-width="3"/><rect x="510" y="138" width="185" height="48" rx="12" fill="#dbeafe" stroke="${C.blue}" stroke-width="3"/>
+        <text x="262" y="168" text-anchor="middle" fill="#15803d" font-weight="850">L₀  (정지계)</text><text x="602" y="168" text-anchor="middle" fill="#1d4ed8" font-weight="850">L = L₀/γ</text>
+        <line x1="135" y1="235" x2="390" y2="235" stroke="${C.green}" stroke-width="3"/><line x1="510" y1="235" x2="695" y2="235" stroke="${C.blue}" stroke-width="3"/><text x="450" y="302" text-anchor="middle" fill="${C.muted}" font-size="12">수축은 운동 방향에서만 나타남</text><text x="450" y="327" text-anchor="middle" fill="${C.muted}" font-size="12">운동 방향 →</text>`);
+    }
+    function fLightClock(){
+      return shell('빛의 왕복 경로와 시간 팽창','LIGHT CLOCK',`
+        <rect x="140" y="108" width="250" height="195" rx="18" fill="#f8fafc" stroke="${C.ink}" stroke-width="3"/><line x1="265" y1="135" x2="265" y2="275" stroke="${C.muted}" stroke-width="2"/>
+        ${circ(265,150,7,C.blue,C.blue,1)}${circ(265,260,7,C.blue,C.blue,1)}<path d="M265 150L265 260L265 150" fill="none" stroke="${C.blue}" stroke-width="4" marker-end="url(#pBlue)"/>
+        <text x="265" y="324" text-anchor="middle" fill="${C.muted}" font-size="12">정지한 시계: 짧은 수직 경로</text>
+        <rect x="510" y="108" width="250" height="195" rx="18" fill="#eef4ff" stroke="#93c5fd" stroke-width="3"/><path d="M555 260L635 150L715 260" fill="none" stroke="${C.blue}" stroke-width="4" marker-end="url(#pBlue)"/><text x="635" y="324" text-anchor="middle" fill="#1d4ed8" font-size="12" font-weight="800">이동하는 시계: 더 긴 빛의 경로</text>`);
+    }
+    function fEquivalence(){
+      return shell('가속 우주선과 중력장의 국소적 동등성','EQUIVALENCE PRINCIPLE',`
+        <rect x="120" y="120" width="270" height="180" rx="18" fill="#f8fafc" stroke="${C.ink}" stroke-width="3"/><rect x="510" y="120" width="270" height="180" rx="18" fill="#f8fafc" stroke="${C.ink}" stroke-width="3"/>
+        <text x="255" y="148" text-anchor="middle" fill="${C.muted}" font-weight="850">가속 우주선</text><text x="645" y="148" text-anchor="middle" fill="${C.muted}" font-weight="850">중력장</text>
+        ${arrow(255,168,255,105)}${arrow(255,215,255,280,'red')}${arrow(645,168,645,280,'red')}
+        <text x="265" y="105" fill="${C.blue}" font-weight="850">a</text><text x="654" y="277" fill="${C.red}" font-weight="850">g</text>
+        <rect x="250" y="312" width="400" height="24" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/><text x="450" y="329" text-anchor="middle" fill="#15803d" font-size="12" font-weight="850">국소적으로는 가속 효과와 중력 효과를 구별하기 어렵다</text>`);
+    }
+    function fBending(){
+      return shell('질량이 큰 천체 주변에서 휘는 빛','GRAVITATIONAL LENSING',`
+        <circle cx="450" cy="215" r="82" fill="#e2e8f0" stroke="${C.ink}" stroke-width="3" filter="url(#pShadow)"/><text x="450" y="220" text-anchor="middle" fill="${C.ink}" font-weight="850">질량 M</text>
+        <path d="M105 150Q300 158 450 175Q600 190 795 120" fill="none" stroke="${C.blue}" stroke-width="6"/>
+        <path d="M105 130Q300 138 450 160" fill="none" stroke="#94a3b8" stroke-width="2"/>
+        ${arrow(105,150,190,153)}${arrow(795,120,755,129,'blue')}
+        <text x="118" y="124" fill="${C.blue}" font-weight="850">입사 광선</text><text x="660" y="105" fill="${C.blue}" font-weight="850">휘어진 빛</text><text x="450" y="340" text-anchor="middle" fill="${C.muted}" font-size="12">질량에 의해 시공간이 휘어져 빛의 경로가 휘어짐</text>`);
+    }
+    function fRedshift(){
+      return shell('강한 중력장에서 나온 빛의 중력 적색편이','GRAVITATIONAL REDSHIFT',`
+        <circle cx="220" cy="230" r="95" fill="#0f172a" stroke="${C.ink}" stroke-width="3"/><circle cx="220" cy="230" r="32" fill="#020617"/><text x="220" y="235" text-anchor="middle" fill="#fff" font-weight="800">강한 중력</text>
+        <line x1="300" y1="158" x2="770" y2="158" stroke="${C.red}" stroke-width="5" marker-end="url(#pRed)"/>
+        <line x1="320" y1="205" x2="390" y2="205" stroke="${C.red}" stroke-width="5"/><line x1="412" y1="205" x2="500" y2="205" stroke="${C.red}" stroke-width="3"/><line x1="526" y1="205" x2="630" y2="205" stroke="${C.red}" stroke-width="2"/><text x="335" y="143" fill="${C.red}" font-weight="850">방출</text><text x="648" y="143" fill="${C.red}" font-weight="850">관측: 더 긴 파장 λ</text>
+        <rect x="365" y="288" width="270" height="25" rx="12" fill="#fff7ed" stroke="#fed7aa"/><text x="500" y="305" text-anchor="middle" fill="#c2410c" font-size="12" font-weight="850">중력 시간 지연 → 주파수 감소</text>`);
+    }
+    function fCurvature(){
+      return shell('시공간 곡률과 물체·빛의 경로','SPACETIME CURVATURE',`
+        <path d="M105 125Q180 75 255 125T405 125T555 125T705 125" fill="none" stroke="#94a3b8" stroke-width="3"/>
+        <path d="M105 275Q180 225 255 275T405 275T555 275T705 275" fill="none" stroke="#94a3b8" stroke-width="3"/>
+        <path d="M180 125L180 275M270 95L270 245M360 125L360 275M450 95L450 245M540 125L540 275M630 95L630 245" fill="none" stroke="#d5dbe3" stroke-width="2"/>
+        <circle cx="450" cy="205" r="44" fill="#e2e8f0" stroke="${C.ink}" stroke-width="3" filter="url(#pShadow)"/><text x="450" y="210" text-anchor="middle" fill="${C.ink}" font-weight="850">질량</text>
+        <path d="M105 205Q270 160 450 205Q590 248 790 205" fill="none" stroke="${C.blue}" stroke-width="6"/>
+        <text x="450" y="340" text-anchor="middle" fill="${C.muted}" font-size="12">곡률이 있는 시공간에서 자유낙하와 빛의 경로가 결정됨</text>`);
+    }
+    function fClock(){
+      return shell('중력 퍼텐셜에 따른 시계의 진행 속도','GRAVITATIONAL TIME DILATION',`
+        <circle cx="225" cy="225" r="86" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/><circle cx="675" cy="225" r="86" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+        ${circ(225,225,43,'#fff',C.red,3)}${circ(675,225,43,'#fff',C.green,3)}
+        <line x1="225" y1="225" x2="225" y2="195" stroke="${C.red}" stroke-width="3"/><line x1="225" y1="225" x2="250" y2="240" stroke="${C.red}" stroke-width="3"/>
+        <line x1="675" y1="225" x2="675" y2="188" stroke="${C.green}" stroke-width="3"/><line x1="675" y1="225" x2="710" y2="225" stroke="${C.green}" stroke-width="3"/>
+        <text x="225" y="330" text-anchor="middle" fill="#b91c1c" font-weight="850">강한 중력 → 더 느린 시계</text><text x="675" y="330" text-anchor="middle" fill="#15803d" font-weight="850">약한 중력 → 상대적으로 빠른 시계</text>`);
+    }
+
+    function make(u,q){
+      if(u===1){ if(q===1)return fIncline(); if(q===2)return fTension(); return fRod(); }
+      if(u===2){ if(q===1)return fSlopeProjectile(); if(q===2)return fTwoCollision(); return fEnvelope(); }
+      if(u===3){ if(q===1||q===5)return fConical(); if(q===2)return fSpring(); return fPhase(); }
+      if(u===4){ if(q===1)return fOrbit('ellipse'); if(q===2)return fOrbit('kepler3'); if(q===3)return fOrbit('escape'); return fOrbit('energy'); }
+      if(u===5){ if(q===1)return fSimultaneity(); if(q===2)return fMuon(); if(q===3)return fLength(); return fLightClock(); }
+      if(u===6){ if(q===1)return fEquivalence(); if(q===2)return fBending(); if(q===3)return fRedshift(); if(q===4)return fCurvature(); return fClock(); }
+      return '';
+    }
+
+    function addStyle(){
+      if(document.getElementById('premiumPhysicsStyle')) return;
+      const s=document.createElement('style'); s.id='premiumPhysicsStyle'; s.textContent=`
+        .ut-diagram.ut-premium{margin:26px 0 32px;padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+        .ut-diagram.ut-premium svg{display:block;width:100%;height:auto;min-height:0;max-height:none;border-radius:20px;box-shadow:0 14px 34px rgba(15,23,42,.12)}
+        .ut-diagram.ut-premium figcaption{margin-top:8px;text-align:left;padding-left:6px;color:var(--theme-muted);font-size:11px;font-weight:800}
+        .ut-diagram.ut-premium text{paint-order:stroke;stroke:transparent}
+        html.dark .ut-diagram.ut-premium svg{box-shadow:0 18px 36px rgba(0,0,0,.35)}
+        @media(max-width:600px){.ut-diagram.ut-premium{margin:18px 0 26px}.ut-diagram.ut-premium svg{border-radius:15px}.ut-diagram.ut-premium figcaption{font-size:10px}}
+      `; document.head.appendChild(s);
+    }
+
+    function polish(){
+      addStyle();
+      const app=document.getElementById('unitTestApp'); if(!app) return;
+      const subject=(document.querySelector('.ut-sub')||{}).textContent||''; if(subject.trim()!=='물리학') return;
+      const unitText=(document.querySelector('.ut-unit')||{}).textContent||''; const m1=unitText.match(/^(\d+)/); if(!m1) return;
+      const qText=(document.querySelector('.ut-num')||{}).textContent||''; const m2=qText.match(/QUESTION\s+(\d+)/i); if(!m2) return;
+      const u=Number(m1[1]), q=Number(m2[1]); const figures=app.querySelectorAll('.ut-diagram:not([data-premium])');
+      if(!figures.length) return;
+      const fresh=make(u,q); if(!fresh) return;
+      figures.forEach(el=>el.outerHTML=fresh);
+    }
+    const mo=new MutationObserver(()=>requestAnimationFrame(polish));
+    const boot=()=>{ addStyle(); const app=document.getElementById('unitTestApp'); if(app) mo.observe(app,{childList:true,subtree:true}); requestAnimationFrame(polish); };
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+  })();
+  </script>
 </body>
 </html>
