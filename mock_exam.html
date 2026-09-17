@@ -6,6 +6,7 @@
 <meta name="description" content="기하, 화학, 물리학 영역별 45분 20문제 통합 과학 고난도 모의고사">
 <title>통합 과학 고난도 모의고사</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
@@ -16,16 +17,16 @@
 .dark .mock-nav{background:#0f172a;border-color:#334155}.mock-brand{font-weight:900}.mock-nav-title{flex:1;text-align:center;font-weight:900}.mock-theme{border:0;background:none;font-size:20px;cursor:pointer}
 </style>
 </head>
-<body>
+<body data-theme-page="assessment">
 <div class="mock-page">
 <header class="mock-nav">
 <a href="index.html" class="mock-brand">← 통합 과학</a>
 <div class="mock-nav-title">통합 과학 고난도 모의고사</div>
-<button id="themeToggleBtn" class="mock-theme" aria-label="테마 전환"><span id="themeIcon">☾</span></button>
+<button id="sharedThemeToggleBtn" class="mock-theme" aria-label="테마 전환"><span id="sharedThemeIcon">☾</span></button>
 </header>
 <main id="app"></main>
 </div>
+<script src="js/theme.js"></script>
 <script src="js/mock_exam_app.js"></script>
-<script src="js/geometry_exam_patch.js"></script>
 </body>
 </html>
